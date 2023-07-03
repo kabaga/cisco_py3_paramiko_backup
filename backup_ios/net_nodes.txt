@@ -1,0 +1,9 @@
+# ip address
+10.0.20.107
+10.0.20.109
+
+# fqdn
+# Make sure you there is an A record for each node
+#sw.example.local
+#sw2.example.local
+
