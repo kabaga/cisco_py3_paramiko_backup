@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 #
 import os
+import time
+import shutil
 import paramiko
 from datetime import date
 
@@ -84,4 +86,24 @@ for ip in node_list:
         output_file.write(node)
     ssh.close()
     output_file.close()
+    print("\t+++ The backup job for", ip_addr, "has been complete +++")
 
+
+# Retention 
+# Delete older than 30 days
+rm_thirty_days = time.time() - (30 * 86400)
+rm_dir_files_path = "/home/ansible/backups/" + year
+
+# Search for older directories
+for i in os.listdir(rm_dir_files_path):
+    rm_path = os.path.join(rm_dir_files_path, i)
+    if os.stat(rm_path).st_mtime <= rm_thirty_days:
+        try:
+            print("\n\t--- Removing the Month directory, " + month + " ---")
+            shutil.rmtree(rm_path)
+            print("\t--- The Month directory", month, "has been deleted ---")
+            print("\t--- The 30 day rentention cleanup job has been completed ---\n")
+        except:
+            print("\n\t! ! ! Could not remove the Month", month, "directory ! ! !\n")
+            print("\t! ! ! Please manually delete the Month", month, "directory with the following command: ! ! !\n")
+            print("\t\trm -rf " + rm_path + "\n")
